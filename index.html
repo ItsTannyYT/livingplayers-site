@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Living Players - Minecraft AI Mod</title>
+
+  <style>
+    :root {
+      --bg-main: #060914;
+      --bg-soft: #0d1326;
+      --bg-card: rgba(15, 23, 42, 0.86);
+
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --accent: #22d3ee;
+
+      --text-main: #f8fafc;
+      --text-soft: #cbd5e1;
+      --text-muted: #94a3b8;
+
+      --border: rgba(124, 58, 237, 0.45);
+      --border-cyan: rgba(34, 211, 238, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.3), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 211, 238, 0.18), transparent 30%),
+        linear-gradient(180deg, #060914 0%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background: rgba(6, 9, 20, 0.92);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--text-main);
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-soft);
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links .active {
+      background: rgba(124, 58, 237, 0.22);
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 24px 56px;
+    }
+
+    .hero h1 {
+      font-size: 72px;
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 28px;
+    }
+
+    .hero p {
+      max-width: 780px;
+      margin: auto;
+      font-size: 24px;
+      line-height: 1.4;
+      color: var(--text-soft);
+    }
+
+    .buttons {
+      margin-top: 38px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 17px 32px;
+      border-radius: 9px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      display: inline-block;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    .btn-light {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-dark {
+      background: #020617;
+      color: white;
+      border: 1px solid var(--border-cyan);
+    }
+
+    .cards {
+      max-width: 980px;
+      margin: 35px auto 80px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 34px;
+      padding: 0 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      min-height: 350px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+    }
+
+    .card h2 {
+      font-size: 26px;
+      color: var(--text-main);
+    }
+
+    .card ul {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .card li {
+      margin-bottom: 18px;
+      line-height: 1.45;
+      color: var(--text-soft);
+      font-size: 17px;
+    }
+
+    .card li::before {
+      content: "•";
+      color: var(--accent);
+      font-size: 22px;
+      margin-right: 16px;
+    }
+
+    .card strong {
+      color: var(--primary-light);
+    }
+
+    .wide-section {
+      max-width: 980px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .panel {
+      background: rgba(15, 23, 42, 0.88);
+      border-radius: 18px;
+      border: 1px solid var(--border-cyan);
+      padding: 36px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.28);
+    }
+
+    .panel h2 {
+      font-size: 34px;
+      margin-bottom: 14px;
+      color: var(--accent);
+    }
+
+    .panel p {
+      font-size: 19px;
+      color: var(--text-soft);
+      line-height: 1.5;
+      margin-bottom: 26px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 24px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 {
+        font-size: 46px;
+      }
+
+      .hero p {
+        font-size: 19px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="logo">
+        <div class="logo-icon">▣</div>
+        <span>Living Players</span>
+      </div>
+
+      <div class="nav-links">
+        <a class="active" href="#">Home</a>
+        <a href="#features">Features</a>
+        <a href="#technical">Technical</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="https://www.patreon.com/YOUR-PATREON-NAME" target="_blank">Patreon ›</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Living Players</h1>
+
+    <p>
+      A Minecraft Fabric mod that adds autonomous AI player-like entities with memory,
+      needs, inventory, learning, chat responses, and survival behavior.
+    </p>
+
+    <div class="buttons">
+      <a class="btn btn-primary" href="#features">Explore Features</a>
+      <a class="btn btn-light" href="#technical">Technical Details</a>
+      <a class="btn btn-dark" href="https://www.patreon.com/YOUR-PATREON-NAME" target="_blank">
+        Get Mod on Patreon
+      </a>
+    </div>
+  </section>
+
+  <section class="cards" id="features">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">🧠</div>
+        <h2>AI Player Features</h2>
+      </div>
+
+      <ul>
+        <li><strong>AI Player Entity:</strong> Adds player-like AI characters, not villagers.</li>
+        <li><strong>Persistent Identity:</strong> AI players can keep identity, memory, inventory, and knowledge.</li>
+        <li><strong>Survival Behavior:</strong> AI can gather wood, craft basics, sleep, flee danger, and hold items visually.</li>
+        <li><strong>Natural Chat:</strong> Designed for chat commands, delayed replies, and player interaction.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="technical">
+      <div class="card-title">
+        <div class="card-icon">⚙️</div>
+        <h2>Technical Specifications</h2>
+      </div>
+
+      <ul>
+        <li><strong>Minecraft:</strong> 1.21.1</li>
+        <li><strong>Mod Loader:</strong> Fabric Loader 0.19.3</li>
+        <li><strong>Fabric API:</strong> 0.116.12+1.21.1</li>
+        <li><strong>Language:</strong> Java 21</li>
+        <li><strong>Mod ID:</strong> livingplayers</li>
+        <li><strong>Package:</strong> com.livingplayers</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wide-section" id="roadmap">
+    <div class="panel">
+      <h2>Development Roadmap</h2>
+      <p>
+        Current systems include AI brain ticks, basic survival priorities, memory,
+        known beds, known chests, wood gathering, crafting, sleep behavior, fleeing,
+        and item handling.
+      </p>
+
+      <p>
+        Next planned systems include item classification, stronger food gathering,
+        chest ownership rules, better storage behavior, and expanded long-term AI decision making.
+      </p>
+
+      <a class="btn btn-primary" href="https://www.patreon.com/YOUR-PATREON-NAME" target="_blank">
+        Support Living Players
+      </a>
+    </div>
+  </section>
+
+  <section class="wide-section">
+    <div class="panel">
+      <h2>Get Access</h2>
+      <p>
+        Living Players will be available through Patreon for supporters, updates,
+        development logs, test builds, and future experimental AI systems.
+      </p>
+
+      <a class="btn btn-dark" href="https://www.patreon.com/YOUR-PATREON-NAME" target="_blank">
+        Get Mod on Patreon
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    Living Players — Minecraft AI Player Mod
+  </footer>
+</body>
+</html>
